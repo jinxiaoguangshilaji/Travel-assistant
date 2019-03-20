@@ -1,0 +1,81 @@
+drop table traffic_train;
+drop table traffic_bus;
+drop table traffic_plane;
+drop table traffic_hstrain;
+Create Table traffic_train
+(traffic_id varchar(8) not null,
+ traffic_start_point nvarchar(8) not null,
+ traffic_start_time datetime not null,
+ traffic_end_point nvarchar(8) not null,
+ traffic_end_time datetime not null,
+ traffic_seat_number int not null,
+ traffic_seat_count int not null,
+ traffic_cost money not null
+);
+Create Table traffic_hstrain
+(traffic_id varchar(8) not null,
+ traffic_start_point nvarchar(8) not null,
+ traffic_start_time datetime not null,
+ traffic_end_point nvarchar(8) not null,
+ traffic_end_time datetime not null,
+ traffic_seat_number int not null,
+ traffic_seat_count int not null,
+ traffic_cost money not null
+);
+Create Table traffic_plane
+(traffic_id varchar(8) not null,
+ traffic_start_point nvarchar(8) not null,
+ traffic_start_time datetime not null,
+ traffic_end_point nvarchar(8) not null,
+ traffic_end_time datetime not null,
+ traffic_seat_number int not null,
+ traffic_seat_count int not null,
+ traffic_cost money not null
+);
+Create Table traffic_bus
+(traffic_id varchar(8) not null,
+ traffic_start_point nvarchar(8) not null,
+ traffic_start_time datetime not null,
+ traffic_end_point nvarchar(8) not null,
+ traffic_end_time datetime not null,
+ traffic_seat_number int not null,
+ traffic_seat_count int not null,
+ traffic_cost money not null
+);
+
+
+Create view traffic_all as
+select 
+traffic_id as id,
+traffic_start_point as start_point,
+traffic_start_time as start_time,
+traffic_end_point as end_point,
+traffic_end_time as end_time,
+traffic_cost as cost,
+traffic_seat_number-traffic_seat_count as seat 
+from 
+(
+select * from traffic_bus 
+union 
+select * from traffic_train 
+union 
+select * from traffic_hstrain 
+union 
+select * from traffic_plane
+)ls
+where traffic_seat_count<traffic_seat_number;
+
+
+/*
+´¥·¢Æ÷
+create trigger all_update
+on traffic_all
+instead of update
+as 
+begin
+update traffic_bus set traffic_seat_count=traffic_seat_number-(select seat from inserted) where traffic_id=(select id from inserted) and traffic_start_time=(select start_time from inserted);
+update traffic_train set traffic_seat_count=traffic_seat_number-(select seat from inserted) where traffic_id=(select id from inserted) and traffic_start_time=(select start_time from inserted);
+update traffic_hstrain set traffic_seat_count=traffic_seat_number-(select seat from inserted) where traffic_id=(select id from inserted) and traffic_start_time=(select start_time from inserted);
+update traffic_plane set traffic_seat_count=traffic_seat_number-(select seat from inserted) where traffic_id=(select id from inserted) and traffic_start_time=(select start_time from inserted);
+end
+*/

@@ -1,0 +1,166 @@
+/*
+insert into traffic_all values
+('111','1','2017/2/3 15:50:00','2','2017/2/3 16:00:00',100,20,100),
+('111','2','2017/2/3 16:15:00','3','2017/2/3 17:00:00',100,20,100),
+('111','3','2017/2/3 17:45:30','5','2017/2/3 19:00:00',100,20,100),
+('111','5','2017/2/3 19:15:30','4','2017/2/3 20:00:00',100,20,100),
+('113','1','2017/2/3 16:00:00','3','2017/2/3 17:30:00',100,20,50),
+('114','3','2017/2/3 16:00:00','1','2017/2/3 17:30:00',100,20,50),
+('115','3','2017/2/3 17:45:00','4','2017/2/3 19:00:00',100,20,6000),
+('117','2','2017/2/3 17:50:30','4','2017/2/3 21:00:00',50,20,50);
+
+*/
+drop table dij_temp;
+drop table dij_ans;
+create table dij_temp
+(
+	id varchar(8) not null,
+	end_point nvarchar(8) not null,
+	end_time datetime not null,
+	cost money not null,
+	traffic_count int not null,
+	flag int not null
+);
+/* 
+flag
+1 2 4~最快,最便宜,换乘少
+8,16,32,64->客车,火车,高铁,飞机.
+*/
+create table dij_ans
+(
+	id varchar(8) not null,
+	end_point nvarchar(8) not null,
+	end_time datetime not null,
+	cost money not null,
+	traffic_count int not null,
+	flag int not null
+);
+/*
+使用:
+exec dij '1','2000-1-1','3',121;
+然后dij_ans表中存储路线中每一个车次的id,到站时间,站点名等信息..根据此即可得到完整路线.
+*/
+
+/*
+存储过程
+*/
+create procedure dij
+@first_point nvarchar(8),
+@first_time datetime,
+@final_point nvarchar(8),
+@flag int
+as
+begin
+declare @id varchar(8);
+declare @start_point nvarchar(8);
+declare @start_time datetime;
+declare @cost money;
+declare @count int;
+delete from dij_temp;
+delete from dij_ans;
+insert into dij_temp values('start',@first_point,@first_time,0,0,@flag);
+
+
+while (select count(*) from dij_temp)>0
+begin
+
+if (@flag&2)!=0
+begin
+ select top 1 @id=id,@start_point=end_point,@start_time=end_time,@cost=cost,@count=traffic_count from dij_temp order by cost,end_time;
+ delete from dij_temp where end_time=@start_time and id=@id;
+ delete from dij_ans where end_point=@start_point and cost>@cost and datediff(mi,@start_time,end_time)>0;
+ if (select count(*) from dij_ans where end_point=@start_point and cost<@cost and datediff(mi,end_time,@start_time)>0)=0
+ begin
+  insert into dij_ans values(@id,@start_point,@start_time,@cost,@count,@flag);
+ end
+ else
+  continue;
+end
+
+else if (@flag&4)!=0
+begin
+ select top 1 @id=id,@start_point=end_point,@start_time=end_time,@cost=cost,@count=traffic_count from dij_temp order by traffic_count,end_time;
+ delete from dij_temp where end_time=@start_time and id=@id;
+ delete from dij_ans where end_point=@start_point and traffic_count>@count and datediff(mi,@start_time,end_time)>0;
+ if (select count(*) from dij_ans where end_point=@start_point and traffic_count<@count and datediff(mi,end_time,@start_time)>0)=0
+ begin
+  insert into dij_ans values(@id,@start_point,@start_time,@cost,@count,@flag);
+ end
+ else
+  continue;
+end
+
+else
+begin
+ select top 1 @id=id,@start_point=end_point,@start_time=end_time,@cost=cost,@count=traffic_count from dij_temp order by end_time;
+ delete from dij_temp where end_time=@start_time and id=@id;
+ delete from dij_ans where end_point=@start_point and datediff(mi,@start_time,end_time)>0;
+ if (select count(*) from dij_ans where end_point=@start_point and datediff(mi,end_time,@start_time)>0)=0
+ begin
+  insert into dij_ans values(@id,@start_point,@start_time,@cost,@count,@flag);
+ end
+ else
+  continue;
+end
+
+if(@flag&8)!=0
+begin
+insert into dij_temp select id,end_point,end_time,@cost+cost,@count,@flag from traffic_all where start_point=@start_point and datediff(mi,@start_time,start_time)>=5 and id=@id and id in (select distinct traffic_id from traffic_bus);
+insert into dij_temp select id,end_point,end_time,@cost+cost,@count+1,@flag from traffic_all where start_point=@start_point and datediff(mi,@start_time,start_time)>=5 and id!=@id and id in (select distinct traffic_id from traffic_bus);
+
+end
+if(@flag&16)!=0
+begin
+insert into dij_temp select id,end_point,end_time,@cost+cost,@count,@flag from traffic_all where start_point=@start_point and datediff(mi,@start_time,start_time)>=5 and id=@id and id in (select distinct traffic_id from traffic_train);
+insert into dij_temp select id,end_point,end_time,@cost+cost,@count+1,@flag from traffic_all where start_point=@start_point and datediff(mi,@start_time,start_time)>=5 and id!=@id and id in (select distinct traffic_id from traffic_train);
+
+end
+if(@flag&32)!=0
+begin
+insert into dij_temp select id,end_point,end_time,@cost+cost,@count,@flag from traffic_all where start_point=@start_point and datediff(mi,@start_time,start_time)>=5 and id=@id and id in (select distinct traffic_id from traffic_hstrain);
+insert into dij_temp select id,end_point,end_time,@cost+cost,@count+1,@flag from traffic_all where start_point=@start_point and datediff(mi,@start_time,start_time)>=5 and id!=@id and id in (select distinct traffic_id from traffic_hstrain);
+
+end
+if(@flag&64)!=0
+begin
+insert into dij_temp select id,end_point,end_time,@cost+cost,@count+1,@flag from traffic_all where start_point=@start_point and datediff(mi,@start_time,start_time)>=5 and id in (select distinct traffic_id from traffic_plane);
+end
+
+end
+
+
+if (select count(*) from dij_ans where end_point=@final_point)=0
+ return 0;
+if (@flag&2)!=0
+begin
+ select top 1 @id=id,@start_time=end_time,@cost=cost from dij_ans where end_point=@final_point order by cost,end_time;
+ while @id!='start'
+ begin
+  insert into dij_temp select * from dij_ans where id=@id and end_time=@start_time;
+  select top 1 @id=id,@start_time=end_time,@cost=cost from dij_ans where end_point=(select start_point from traffic_all where id=@id and end_time=@start_time) and cost=@cost-(select cost from traffic_all where id=@id and end_time=@start_time) order by end_time;
+ end
+end
+
+else if (@flag&4)!=0
+begin
+ select top 1 @id=id,@start_time=end_time,@count=traffic_count from dij_ans where end_point=@final_point order by traffic_count,end_time;
+ while @id!='start'
+ begin
+  insert into dij_temp select * from dij_ans where id=@id and end_time=@start_time;
+  select top 1 @id=id,@start_time=end_time,@count=traffic_count from dij_ans where end_point=(select start_point from traffic_all where id=@id and end_time=@start_time) and ((traffic_count=@count-1 and (id!=@id or id in(select id from traffic_plane)))or(traffic_count=@count and (id=@id and id not in(select id from traffic_plane)))) order by end_time;
+ end
+end
+
+else
+begin
+ select top 1 @id=id,@start_time=end_time from dij_ans where end_point=@final_point order by end_time;
+ while @id!='start'
+ begin
+  insert into dij_temp select * from dij_ans where id=@id and end_time=@start_time;
+  select top 1 @id=id,@start_time=end_time from dij_ans where end_point=(select start_point from traffic_all where id=@id and end_time=@start_time) and datediff(mi,end_time,(select start_time from traffic_all where id=@id and end_time=@start_time))>0 order by end_time;
+ end
+end
+
+delete from dij_ans;
+insert into dij_ans select * from dij_temp;
+end

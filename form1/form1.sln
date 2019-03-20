@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "客运管理系统", "form1\客运管理系统.csproj", "{9A31193D-E9E8-46AF-B115-6DF14C5711FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{2674C43A-C190-4954-B125-346A8E487AE0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9A31193D-E9E8-46AF-B115-6DF14C5711FF} = {9A31193D-E9E8-46AF-B115-6DF14C5711FF}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A31193D-E9E8-46AF-B115-6DF14C5711FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A31193D-E9E8-46AF-B115-6DF14C5711FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A31193D-E9E8-46AF-B115-6DF14C5711FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A31193D-E9E8-46AF-B115-6DF14C5711FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2674C43A-C190-4954-B125-346A8E487AE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2674C43A-C190-4954-B125-346A8E487AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2674C43A-C190-4954-B125-346A8E487AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2674C43A-C190-4954-B125-346A8E487AE0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0BC1C38-4295-4896-B02B-BBD7714F555C}
+	EndGlobalSection
+EndGlobal

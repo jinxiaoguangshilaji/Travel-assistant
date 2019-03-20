@@ -1,0 +1,28 @@
+
+form1 文件夹中是c#项目源码,可忽略,有兴趣的话可以查看
+
+/*
+本部分txt仅为开发过程中某阶段的代码,最终代码以init.sql中为准
+
+dij_create.txt 为SPFA算法实现
+order_create.txt 为订单相关表的创建代码
+server_user.txt 为数据库账户创建代码
+traffic_create.txt 为交通工具相关表以及视图的创建代码
+user_create.txt 为用户表的相关创建代码
+traffic_insert 为随机交通工具信息导入
+*/
+
+最后之作 文件夹中为最终成品:
+*.exe:
+traffic_server.exe 客运管理系统主程序
+backup.exe 数据库层面的操作程序(备份/还原/删除数据库)
+*.sql:
+back.sql 数据库备份相关的不可直接使用的操作文件
+store.sql 数据库还原相关的不可直接使用的操作文件
+backreal.sql 使用backup.exe进行数据库备份时根据back.sql生成的可用文件,可删除
+store.sql 使用backup.exe进行数据库还原时根据store.sql生成的可用文件,可删除
+init.sql 与traffic_server.exe第一次启动初始化数据库文件相关的不可直接使用的操作文件
+*.ini
+traffic_conf.ini 存有默认数据库名,当本机中已有同名数据库且不可删除时可修改此文件中的数据库名.
+*.config
+与同名程序的.net兼容性相关,若删除,将不能运行于仅装有.net3.5的Windows.注意,本程序不保证能运行于.net3.5以下环境.

@@ -1,0 +1,9 @@
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.Cache
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\bin\Debug\backup.exe.config
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\bin\Debug\backup.exe
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\bin\Debug\backup.pdb
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\obj\Debug\backup.exe
+E:\sql期末\sql期末1.1.第二次\sql期末\form1\WindowsFormsApp1\obj\Debug\backup.pdb

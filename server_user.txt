@@ -1,0 +1,15 @@
+create login trafficserver with password='trafficserver';
+create user trafficserver for login trafficserver;
+
+alter user trafficserver with login=trafficserver;
+
+
+grant select,insert,update to trafficserver;
+grant delete on dij_temp to trafficserver;
+grant delete on dij_ans to trafficserver;
+grant delete on order_cache to trafficserver;
+grant execute on dij to trafficserver;
+
+drop schema trafficserver;
+drop user trafficserver;
+drop login trafficserver;
